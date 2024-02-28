@@ -13,11 +13,9 @@ body {
     position: fixed;
     top: 10px;
     left:10px;
-    background-color: blueviolet;
 }
 #timer{
     position: fixed;
     top: 10px;
     left:1950px;
-    background-color: blueviolet;
 }
