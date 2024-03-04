@@ -23,8 +23,9 @@ var wordWidth = 9600;
 function preload()
 {
     this.load.image('pes', 'assets/pes.png');
-    this.load.image('bg', 'assets/bg.jpg');
-    this.load.image('platform', 'assets/platform.png');
+    this.load.image('bg', 'assets/bg.png');
+    this.load.image('platform', 'assets/platform.jpg');
+    this.load.image('stone', 'assets/stone.jpg');
 
     
 }
@@ -33,12 +34,12 @@ function create()
 {
 
     
-    this.add.tileSprite(0,0, wordWidth, 1080, "bg").setOrigin(0,0);
+    this.add.tileSprite(0,0, wordWidth, 1080, "bg").setOrigin(0,0).setScale(4);
     platforms = this.physics.add.staticGroup();
-   for(var x=0; x<wordWidth; x=x+360)
+   for(var x=0; x<wordWidth; x=x+36*5)
     {
         console.log(x)
-        platforms.create(x, 1080-100, 'platform').setOrigin(0,0).refreshBody();
+        platforms.create(x, 1080-36*5, 'platform').setOrigin(0,0).refreshBody().setScale(5);
         
     }
     /*for (var x = 0; x < worldwidth; x = x + Phaser.Math. FloatBetween (400, 500)){
@@ -50,13 +51,24 @@ function create()
     player = this.physics.add.sprite(100, 450, 'pes');
 
     player.setBounce(0.2);
-    player.setCollideWorldBounds(true);
+    player.setCollideWorldBounds(false);
+
+    this.physics.add.collider(platforms, player);
 
     cursors = this.input.keyboard.createCursorKeys();
 
     this.cameras.main.setBounds(0,0, wordWidth, 1080);
     this.physics.world.setBounds(0,0, wordWidth,1080);
     this.cameras.main.startFollow(player);
+
+    stone = this.physics.add.staticGroup();
+
+    /*for(var  x=0; x<wordWidt; x=x+Phaser.Math.FloatBetween(200,600) )
+    {
+        var y = 960;
+        console.log(x,y);
+        stones.create(x,y,'stone').setOrigin(0,1).setScale(Phaser.Math.FloatBetween(1,3));
+    } */
     
 }
 
@@ -81,7 +93,7 @@ function update()
     
     }
 
-    if (cursors.up.isDown/* && player.body.touching.down*/)
+    if (cursors.up.isDown && player.body.touching.down)
     {
         player.setVelocityY(-330);
     }
