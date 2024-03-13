@@ -18,9 +18,12 @@ var config = {
     }
 };
 
+var gameOver = false;
+var life = 5;
 var score = 0;
 var starStep = 100;
 var scoreText;
+var lifeText;
 var stars;
 var game = new Phaser.Game(config);
 var worldWidth = config.width * 5;
@@ -39,6 +42,7 @@ function preload() {
     this.load.image('SPR', 'assets/skyPlatformR.png');
 
     this.load.image('star', 'assets/star.webp');
+    this.load.image('tnt', 'assets/tnt.png');
 }
 
 function create() {
@@ -96,12 +100,12 @@ function create() {
             .setDepth(Phaser.Math.Between(1, 10));
         console.log(stone.X, stone.Y)
     }
-    for (var x = 0; x < worldWidth; x = x + Phaser.Math.FloatBetween(900, 1500)) {
+    for (var x = 0; x < worldWidth; x = x + Phaser.Math.FloatBetween(1100, 1700)) {
 
         pen
             .create(x, 1080 - 128, 'pen')
             .setOrigin(0, 1)
-            .setScale(Phaser.Math.FloatBetween(3, .5))
+            .setScale(Phaser.Math.FloatBetween(2, .5))
             .setDepth(Phaser.Math.Between(1, 10));
         console.log(pen.X, pen.Y)
     }
@@ -139,6 +143,22 @@ function create() {
     .setOrigin(0,0)
     .setScrollFactor(0)
     .setDepth(1)
+
+    lifeText = this.add.text(1370, 30, showLife(), { fontSize: '80px', fill: '#FFF' })
+        .setOrigin(0, 0)
+        .setScrollFactor (0)
+    
+    var resetButton = this.add.text(10, 1000, 'reset', { fontSize: '90px', fill: 'black' })
+        .setInteractive()
+        .setScrollFactor(0);
+
+    resetButton.on('pointerdown', function () {
+        /*console.log('restart')
+        self.ghysics.resume();
+        gameOver = false;
+        self.scene.restart();*/
+        location.reload();
+    });
     
 
 
@@ -152,11 +172,25 @@ function create() {
 
         child
             .setBounceY(Phaser.Math.FloatBetween(0.4, 0.8))
-            .setScale(0.3);
+            .setScale(0.3)
+            .setDepth(5);
 
     });
     this.physics.add.collider(stars, platforms);
     this.physics.add.overlap(player, stars, collectStar, null, this);
+
+
+
+    tnt = this.physics.add.staticGroup();
+
+    for (var x = 0; x < worldWidth; x = x + Phaser.Math.FloatBetween(600, 1000)) {
+
+        tnt
+            .create(x, 1080 - 128, 'tnt')
+            .setOrigin(0, 1)
+            .setScale(0.2);
+        console.log(tnt.X, tnt.Y)
+    }
 }
 
 function update() {
@@ -197,6 +231,19 @@ function collectStar(player, star) {
 
         });
     }
+}
+
+//function showLife(): string
+
+function showLife() {
+    var lifeLine = ''
+
+    for (var i = 0; i < life; i++) {
+    lifeLine = lifeLine + '💜'
+    //lifeLine += '❤'
+    console.log(life)
+    }
+    return lifeLine;
 }
 
 
