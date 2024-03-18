@@ -18,6 +18,7 @@ var config = {
     }
 };
 
+var tntStep = Phaser.Math.FloatBetween(1500, 2500)
 var gameOver = false;
 var life = 5;
 var score = 0;
@@ -43,6 +44,8 @@ function preload() {
 
     this.load.image('star', 'assets/star.webp');
     this.load.image('tnt', 'assets/tnt.png');
+    this.load.image('boom', 'assets/boom.webp');
+
 }
 
 function create() {
@@ -180,17 +183,25 @@ function create() {
     this.physics.add.overlap(player, stars, collectStar, null, this);
 
 
+        tnt = this.physics.add.group({
+            key: 'tnt',
+            repeat:worldWidth/ tntStep,
+            setXY: { x: Phaser.Math.FloatBetween(700, 1000), y: 0, stepX: tntStep }
+        });
 
-    tnt = this.physics.add.staticGroup();
+        tnt.children.iterate(function (child) {
 
-    for (var x = 0; x < worldWidth; x = x + Phaser.Math.FloatBetween(600, 1000)) {
+            child
+                .setBounceY(Phaser.Math.FloatBetween(0.1, 0.3))
+                .setScale(0.15)
+                .setDepth(5);
 
-        tnt
-            .create(x, 1080 - 128, 'tnt')
-            .setOrigin(0, 1)
-            .setScale(0.2);
-        console.log(tnt.X, tnt.Y)
-    }
+        });
+ 
+    
+
+    this.physics.add.collider(tnt, platforms);
+    this.physics.add.overlap(player, tnt, collectStar, null, this);
 }
 
 function update() {
@@ -239,12 +250,34 @@ function showLife() {
     var lifeLine = ''
 
     for (var i = 0; i < life; i++) {
-    lifeLine = lifeLine + '💜'
-    //lifeLine += '❤'
-    console.log(life)
+    //lifeLine = lifeLine + '💜'
+    lifeLine += '💜'
+    //console.log(life)
     }
     return lifeLine;
 }
+  
+var hitTnt = false;
 
+
+function boom(player, tnt) {
+    //tnt.disableBody(true, true);
+    //this.add.image(100,100,'boom');
+    if (hitTnt){
+        return;
+    }
+    hitTnt= true;
+    lives = lives -1;
+    lifeText.setText(showLife());
+
+
+    if (tnt.countActive(true) === 0) {
+        tnt.children.iterate(function (child) {
+
+            child.enableBody(true, child.x, 0, true, true);
+           
+        });
+    }
+}
 
 //document.getElementById('score').innerText()
