@@ -3,7 +3,7 @@ var config = {
     width: 1920,
     height: 1080,
     parent: game,
-    playerSpeed: 500,
+    playerSpeed: 1500,
     physics: {
         default: 'arcade',
         arcade: {
@@ -18,7 +18,7 @@ var config = {
     }
 };
 
-var tntStep = Phaser.Math.FloatBetween(1500, 2500)
+var tntStep = Phaser.Math.FloatBetween(500, 1000)
 var gameOver = false;
 var life = 5;
 var score = 0;
@@ -27,7 +27,7 @@ var scoreText;
 var lifeText;
 var stars;
 var game = new Phaser.Game(config);
-var worldWidth = config.width * 5;
+var worldWidth = config.width * 10;
 
 function preload() {
     this.load.image('pes', 'assets/pes.png');
@@ -45,6 +45,7 @@ function preload() {
     this.load.image('star', 'assets/star.webp');
     this.load.image('tnt', 'assets/tnt.png');
     this.load.image('boom', 'assets/boom.webp');
+    this.load.image('defuse', 'assets/defuse.jpg');
 
 }
 
@@ -156,10 +157,6 @@ function create() {
         .setScrollFactor(0);
 
     resetButton.on('pointerdown', function () {
-        /*console.log('restart')
-        self.ghysics.resume();
-        gameOver = false;
-        self.scene.restart();*/
         location.reload();
     });
     
@@ -186,7 +183,7 @@ function create() {
         tnt = this.physics.add.group({
             key: 'tnt',
             repeat:worldWidth/ tntStep,
-            setXY: { x: Phaser.Math.FloatBetween(700, 1000), y: 0, stepX: tntStep }
+            setXY: { x: Phaser.Math.FloatBetween(400, 800), y: 0, stepX: tntStep }
         });
 
         tnt.children.iterate(function (child) {
@@ -199,9 +196,21 @@ function create() {
         });
  
     
+    defuse = this.physics.add.staticGroup();
 
+    
     this.physics.add.collider(tnt, platforms);
-    this.physics.add.overlap(player, tnt, collectStar, null, this);
+    this.physics.add.overlap(player, tnt, boom, null, this);
+    this.physics.add.overlap(tnt, defuse, defuseTnt, null, this);
+
+
+
+    this.input.mouse.disableContextMenu();
+
+        this.input.on('pointerdown', function (pointer)
+        { 
+        shot();   
+        }, this);
 }
 
 function update() {
@@ -225,7 +234,13 @@ function update() {
         player.setVelocityY(-500);
     }
 
+    if (cursors.down.isDown) {
+        player.setVelocityY(1500);
+    }
 
+    if(life==0){
+            death()  
+        }
 
 
 }
@@ -244,7 +259,6 @@ function collectStar(player, star) {
     }
 }
 
-//function showLife(): string
 
 function showLife() {
     var lifeLine = ''
@@ -256,28 +270,35 @@ function showLife() {
     }
     return lifeLine;
 }
-  
-var hitTnt = false;
 
 
 function boom(player, tnt) {
-    //tnt.disableBody(true, true);
-    //this.add.image(100,100,'boom');
-    if (hitTnt){
-        return;
-    }
-    hitTnt= true;
-    lives = lives -1;
+    tnt.disableBody(true, true);
+    x= player.x
+    y= player.y
+    this.add.image(x,y,'boom')
+        .setScale(0.2)
+        .setDepth(12);
+    life = life -1;
     lifeText.setText(showLife());
-
-
-    if (tnt.countActive(true) === 0) {
-        tnt.children.iterate(function (child) {
-
-            child.enableBody(true, child.x, 0, true, true);
-           
-        });
-    }
 }
 
+function death(){
+    //this.add.text(width/2, height/2, '2 БАЛА', { fontSize: '120px', fill: 'black' })
+    //.setScrollFactor(0);
+    
+    location.reload;
+}
+
+function shot(){
+x= player.x
+y= player.y
+this.defuse = this.physics.add.sprite(x, y, 'defuse');
+    //.setScale(0,2);
+this.bullet.body.velocity.x = 300;
+}
+function defuseTnt(tnt, defuse){
+    tnt.disableBody(true, true);
+    defuse.disableBody(true, true);
+}
 //document.getElementById('score').innerText()
