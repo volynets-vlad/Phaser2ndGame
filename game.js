@@ -18,6 +18,7 @@ var config = {
     }
 };
 
+var enemyCount = 100;
 var tntStep = Phaser.Math.FloatBetween(500, 1000)
 var gameOver = false;
 var life = 5;
@@ -28,6 +29,7 @@ var lifeText;
 var stars;
 var game = new Phaser.Game(config);
 var worldWidth = config.width * 10;
+ 
 
 function preload() {
     this.load.image('pes', 'assets/pes.png');
@@ -143,6 +145,10 @@ function create() {
             .setScale(1.5);
     }
 
+    /*enemyText = this.add.text(300, 50, showTextSymbol('👿', enemyCount, { fontSize: '40px', fill:'black'}))
+        .setOrigin(0, 0)
+        .setScrollFactor(0)*/
+
     scoreText = this.add.text(10, 10, 'Score: 0', { fontSize: '90px', fill: 'black' })
     .setOrigin(0,0)
     .setScrollFactor(0)
@@ -182,7 +188,7 @@ function create() {
 
         tnt = this.physics.add.group({
             key: 'tnt',
-            repeat:worldWidth/ tntStep,
+            repeat:enemyCount,
             setXY: { x: Phaser.Math.FloatBetween(400, 800), y: 0, stepX: tntStep }
         });
 
@@ -201,19 +207,36 @@ function create() {
     
     this.physics.add.collider(tnt, platforms);
     this.physics.add.overlap(player, tnt, boom, null, this);
-    this.physics.add.overlap(tnt, defuse, defuseTnt, null, this);
+   // this.physics.add.overlap(tnt, defuse, defuseTnt, null, this);
 
 
 
-    this.input.mouse.disableContextMenu();
+    /*this.input.mouse.disableContextMenu();
 
         this.input.on('pointerdown', function (pointer)
         { 
-        shot();   
-        }, this);
+        fire();   
+        }, this);*/
 }
 
 function update() {
+    if(cursors.down.isDown){
+        x= player.x
+        y= player.y
+        defuse = this.physics.add.sprite(x, y, 'defuse')
+        //.setScale(0,2)
+        .setVelocityX (500)
+        .setDepth(5);
+        this.physics.add.collider(tnt, defuse,  (tnt) => {
+            tnt.disableBody (true, true);
+            defuse.disableBody (true, true);
+        },null,this);
+        
+    }
+    
+    
+    
+    
     if (cursors.left.isDown) {
         player.setVelocityX(-config.playerSpeed);
 
@@ -234,12 +257,12 @@ function update() {
         player.setVelocityY(-500);
     }
 
-    if (cursors.down.isDown) {
+    /*if (cursors.down.isDown) {
         player.setVelocityY(1500);
-    }
+    }*/
 
-    if(life==0){
-            death()  
+    if(life===0){
+            this.physics.pause();  
         }
 
 
@@ -290,15 +313,17 @@ function death(){
     location.reload;
 }
 
-function shot(){
+/*function fire(){
 x= player.x
 y= player.y
-this.defuse = this.physics.add.sprite(x, y, 'defuse');
+defuse = this.physics.add.sprite(x, y, 'defuse');
     //.setScale(0,2);
 this.bullet.body.velocity.x = 300;
-}
-function defuseTnt(tnt, defuse){
+}*/
+
+
+/*function defuseTnt(tnt, defuse){
     tnt.disableBody(true, true);
     defuse.disableBody(true, true);
-}
+}*/
 //document.getElementById('score').innerText()
