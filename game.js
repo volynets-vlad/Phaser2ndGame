@@ -48,6 +48,7 @@ function preload() {
     this.load.image('tnt', 'assets/tnt.png');
     this.load.image('boom', 'assets/boom.webp');
     this.load.image('defuse', 'assets/defuse.jpg');
+    this.load.audio('boomsound', 'assets/boom.mp3');
 
 }
 
@@ -302,6 +303,8 @@ function boom(player, tnt) {
     this.add.image(x,y,'boom')
         .setScale(0.2)
         .setDepth(12);
+    var sound = this.sound.add('boomsound');
+    sound.play();
     life = life -1;
     lifeText.setText(showLife());
 }
