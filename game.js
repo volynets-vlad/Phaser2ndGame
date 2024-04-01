@@ -176,7 +176,8 @@ function create() {
     
     var resetButton = this.add.text(10, 1000, 'reset', { fontSize: '90px', fill: 'black' })
         .setInteractive()
-        .setScrollFactor(0);
+        .setScrollFactor(0)
+        .setDepth(11);
 
     resetButton.on('pointerdown', function () {
         location.reload();
