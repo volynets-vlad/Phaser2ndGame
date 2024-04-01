@@ -39,6 +39,7 @@ function preload() {
     this.load.image('pen', 'assets/pen.png');
     this.load.image('stone', 'assets/stone.png');
     this.load.image('tree', 'assets/tree.png');
+    this.load.image('baobab','assets/baobab.png');
 
     this.load.image('SP', 'assets/skyPlatform.png');
     this.load.image('SPL', 'assets/skyPlatformL.png');
@@ -64,7 +65,10 @@ function create() {
     platforms = this.physics.add.staticGroup();
     for (var x = 0; x < worldWidth; x = x + 128) {
         console.log(x)
-        platforms.create(x, 1080 - 128, 'platform').setOrigin(0, 0).refreshBody();
+        platforms.create(x, 1080 - 128, 'platform')
+        .setOrigin(0, 0)
+        .refreshBody()
+        .setDepth(10);
 
     }
     /*for (var x = 0; x < worldwidth; x = x + Phaser.Math. FloatBetween (400, 500)){
@@ -97,6 +101,7 @@ function create() {
     stone = this.physics.add.staticGroup();
     pen = this.physics.add.staticGroup();
     tree = this.physics.add.staticGroup();
+    baobab = this.physics.add.staticGroup();
 
     for (var x = 0; x < worldWidth; x = x + Phaser.Math.FloatBetween(600, 1000)) {
 
@@ -125,6 +130,16 @@ function create() {
             .setDepth(Phaser.Math.Between(1, 10));
         console.log(tree.X, tree.Y)
     }
+    for (var x = 0; x < worldWidth; x = x + Phaser.Math.FloatBetween(2500, 3500)) {
+
+        baobab
+            .create(x, 1080 - 80, 'baobab')
+            .setOrigin(0, 1)
+            .setScale(Phaser.Math.FloatBetween(.2, 1))
+            .setDepth(0);
+        console.log(baobab.X, baobab.Y)
+    }
+
 
 
 
