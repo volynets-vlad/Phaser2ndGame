@@ -208,16 +208,14 @@ function create() {
     
     this.physics.add.collider(tnt, platforms);
     this.physics.add.overlap(player, tnt, boom, null, this);
-   // this.physics.add.overlap(tnt, defuse, defuseTnt, null, this);
 
-
-
-    /*this.input.mouse.disableContextMenu();
-
-        this.input.on('pointerdown', function (pointer)
-        { 
-        fire();   
-        }, this);*/
+    /*x= player.x
+    if(x==worldWidth){
+        
+        this.physics.pause();
+        var loseText= this.add.text(config.width/2 -100, config.height/2-50, '2 БАЛА!', {fontSize:'32px', fill:'#fff'})
+        .setScrollFactor(0);
+    }*/
 }
 
 function update() {
@@ -228,12 +226,16 @@ function update() {
         //.setScale(0,2)
         .setVelocityX (500)
         .setDepth(5);
-        this.physics.add.collider(tnt, defuse,  (tnt) => {
+        this.physics.add.collider(tnt, defuse,  (tnt, defuse) => {
             tnt.disableBody (true, true);
             defuse.disableBody (true, true);
         },null,this);
         
     }
+    this.physics.add.collider(tnt, defuse,  (tnt, defuse) => {
+        tnt.disableBody (true, true);
+        defuse.disableBody (true, true);
+    },null,this);
     
     
     
@@ -263,8 +265,10 @@ function update() {
     }*/
 
     if(life===0){
-            this.physics.pause();  
-        }
+        this.physics.pause();  
+    }
+
+    
 
 
 }
